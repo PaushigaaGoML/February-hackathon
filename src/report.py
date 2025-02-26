@@ -5,6 +5,7 @@ from src.utils.text_parser import extract_patient_data_text
 from src.agents.general_practioner_agent import determine_priority
 from src.agents.agent_orchestration import get_report_from_specialist
 import json
+import streamlit as st
 
 
 async def generate_report_pdf(lab_report_pdf_path, scan_report_pdf_path):
@@ -14,7 +15,10 @@ async def generate_report_pdf(lab_report_pdf_path, scan_report_pdf_path):
     scan_data = extract_patient_data_pdf(scan_report_pdf_path, 'image report')
     patient_data['lab report'] = lab_data
     patient_data['image report'] = scan_data
-
+    if "patient_data" not in st.session_state:
+        st.session_state["patient_data"] = patient_data
+    else:
+        st.session_state["patient_data"] = patient_data
     # get priority order
     priority_order = await determine_priority(patient_data)
     priority_order = json.loads(priority_order)
@@ -36,6 +40,10 @@ async def generate_report_image(lab_report_image_path, scan_report_image_path):
         scan_report_image_path, 'image report')
     patient_data['lab report'] = lab_data
     patient_data['image report'] = scan_data
+    if "patient_data" not in st.session_state:
+        st.session_state["patient_data"] = patient_data
+    else:
+        st.session_state["patient_data"] = patient_data
 
     # get priority order
     priority_order = await determine_priority(patient_data)
@@ -52,6 +60,10 @@ async def generate_report_text(lab_report_text, scan_report_text):
     scan_data = extract_patient_data_text(scan_report_text, 'image report')
     patient_data['lab report'] = lab_data
     patient_data['image report'] = scan_data
+    if "patient_data" not in st.session_state:
+        st.session_state["patient_data"] = patient_data
+    else:
+        st.session_state["patient_data"] = patient_data
 
     # get priority order
     priority_order = await determine_priority(patient_data)

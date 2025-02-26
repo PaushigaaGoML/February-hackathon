@@ -2,15 +2,9 @@ import streamlit as st
 import asyncio
 import os
 from src.report import generate_report_pdf, generate_report_image, generate_report_text
-from src.agents.agent_chat import (
-    chat_cardiologist, chat_oncologist, chat_neurologist, chat_endocrinologist,
-    chat_pulmonologist, chat_nephrologist, chat_gastroenterologist, chat_hematologist,
-    chat_rheumatologist, chat_dermatologist, chat_ophthalmologist, chat_otolaryngologist,
-    chat_urologist, chat_gynecologist, chat_obstetrician, chat_orthopedic_surgeon,
-    chat_pediatrician, chat_psychiatrist, chat_geriatrist, chat_infectious_disease_specialist,
-    chat_allergist_immunologist, chat_anesthesiologist, chat_radiologist, chat_pathologist
-)
 from src.utils.report_generator import generate_medical_report
+from src.agents.chat_mapping import call_chat_agents
+import json
 
 # Initialize session state
 if 'logged_in' not in st.session_state:
@@ -74,6 +68,7 @@ async def get_report():
                         f.write(scan_report_pdf.read())
 
                     report = await generate_report_pdf(lab_pdf_path, scan_pdf_path)
+                    st.write(report)
                     generate_medical_report(report)
                     # download pdf
                     st.download_button(
@@ -104,6 +99,11 @@ async def get_report():
 
                     report = await generate_report_image(lab_image_path, scan_image_path)
                     st.write(report)
+                    generate_medical_report(report)
+                    # download pdf
+                    st.download_button(
+                        label="Download Report", data=open("medical_report.pdf", "rb").read(), file_name="medical_report.pdf", mime="application/pdf"
+                    )
                 else:
                     st.error("Please upload both lab report and scan report")
 
@@ -116,6 +116,11 @@ async def get_report():
                 if lab_report_text and scan_report_text:
                     report = await generate_report_text(lab_report_text, scan_report_text)
                     st.write(report)
+                    generate_medical_report(report)
+                    # download pdf
+                    st.download_button(
+                        label="Download Report", data=open("medical_report.pdf", "rb").read(), file_name="medical_report.pdf", mime="application/pdf"
+                    )
                 else:
                     st.error("Please enter both lab report and scan report")
 
@@ -169,8 +174,14 @@ async def chat_with_specialist():
         st.chat_message("user").markdown(prompt)
         # Add user message to chat history
         st.session_state[chat_id].append({"role": "user", "content": prompt})
-
-        response = "Hey this is a response from the specialist"
+        if "patient_data" in st.session_state:
+            patient_data = st.session_state["patient_data"]
+        else:
+            st.warning("Please generate a report first")
+            return
+        response = await call_chat_agents(patient_data, prompt, specialist)
+        response = json.loads(response)
+        response = response['chat_response']
         # Display assistant response in chat message container
         with st.chat_message(f"{specialist}"):
             st.markdown(response)
