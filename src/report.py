@@ -47,6 +47,7 @@ async def generate_report_image(lab_report_image_path, scan_report_image_path):
 
     # get priority order
     priority_order = await determine_priority(patient_data)
+    priority_order = json.loads(priority_order)
 
     # get report according to the priority
     report = await get_report_from_specialist(priority_order, patient_data)
@@ -67,6 +68,7 @@ async def generate_report_text(lab_report_text, scan_report_text):
 
     # get priority order
     priority_order = await determine_priority(patient_data)
+    priority_order = json.loads(priority_order)
 
     # get report according to the priority
     report = await get_report_from_specialist(priority_order, patient_data)
