@@ -1,5 +1,5 @@
 # February-hackathon
-Building a multi agent system
+Building an Adaptive Multi-Agent Systems for Dynamic Task
 
 ## Folder Structure
 February-hackathon/
