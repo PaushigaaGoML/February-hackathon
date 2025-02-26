@@ -137,7 +137,6 @@ env.bak/
 venv.bak/
 hackathon/
 temp/
-medical_report.pdf
 
 # Spyder project settings
 .spyderproject
