@@ -120,13 +120,20 @@ Each folder and file in the project is organized to ensure a clear separation of
     ```sh
     pip install -r requirements.txt
     ```
+5. **Install Poppler utils on windows**
+https://medium.com/towards-data-science/poppler-on-windows-179af0e50150
 
-5. **Run the main script:**
+**For Mac/Linux:**
+  ```sh
+  sudo apt-get install poppler-utils 
+  ```
+
+6. **Run the main script:**
     ```sh
     streamlit run main.py
     ```
 
-6. **Login Credentials**
+7. **Login Credentials**
 username: admin
 password: admin
 
